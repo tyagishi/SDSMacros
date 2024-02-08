@@ -3,31 +3,42 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
-/// Implementation of the `stringify` macro, which takes an expression
-/// of any type and produces a tuple containing the value of that expression
-/// and the source code that produced the value. For example
-///
-///     #stringify(x + y)
-///
-///  will expand to
-///
-///     (x + y, "x + y")
-public struct StringifyMacro: ExpressionMacro {
-    public static func expansion(
-        of node: some FreestandingMacroExpansionSyntax,
-        in context: some MacroExpansionContext
-    ) -> ExprSyntax {
-        guard let argument = node.argumentList.first?.expression else {
-            fatalError("compiler bug: the macro does not have any arguments")
-        }
-
-        return "(\(argument), \(literal: argument.description))"
-    }
-}
+import SwiftCompilerPlugin
+import SwiftSyntax
+import SwiftSyntaxBuilder
+import SwiftSyntaxMacros
 
 @main
 struct SDSMacrosPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
-        StringifyMacro.self,
+        IsCheckEnumMacro.self,
+        AssociatedValueEnumMacro.self,
+        DidChangeObjectMacro.self,
     ]
 }
+
+enum SDSMacroError: CustomStringConvertible, Error {
+    // macro: IsCheckEnum
+    case isCheckEnumOnlyApplicableToEnum
+
+    // macro: AssociateValueEnum
+    case associatedValueEnumOnlyApplicableToEnum
+    case associatedValueEnumDoesNotSupportManyCaseInOneLine
+    
+    // macro: DidChangeObject
+    case didChangeObjectOnlyApplicableToClass
+    case didChangeObjectNeedsGenericParameterForChangeType
+
+    var description: String {
+        switch self {
+        case .isCheckEnumOnlyApplicableToEnum: return "@IsCheckEnum can only be applied to  an enum"
+        case .associatedValueEnumOnlyApplicableToEnum: return "@AssociatedValueEnum can only be applied to  an enum"
+        case .associatedValueEnumDoesNotSupportManyCaseInOneLine: return "@AssociatedValueEnum does not support many cases definition in one case"
+        case .didChangeObjectOnlyApplicableToClass: return "@DidChangeObject can only be applied to a class"
+        case .didChangeObjectNeedsGenericParameterForChangeType: return "@DidChangeObject needs one Generic parameter to indicate change type"
+        }
+    }
+}
+
+
+

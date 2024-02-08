@@ -1,8 +1,20 @@
 import SDSMacros
+import Combine
 
-let a = 17
-let b = 25
+@IsCheckEnum
+enum MyCase2 {
+    case p1
+    case p2
+    case p3(Int)
+}
 
-let (result, code) = #stringify(a + b)
+@AssociatedValueEnum
+enum MyCase3 {
+    case p1
+    case p2
+    case p3(Int)
+}
 
-print("The value \(result) was produced by the code \"\(code)\"")
+@DidChangeObject<Void>
+class MyClass {
+}

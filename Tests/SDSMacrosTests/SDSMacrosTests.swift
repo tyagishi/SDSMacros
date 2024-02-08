@@ -7,40 +7,9 @@ import XCTest
 import SDSMacrosMacros
 
 let testMacros: [String: Macro.Type] = [
-    "stringify": StringifyMacro.self,
+    "IsCheckEnum": IsCheckEnumMacro.self,
+    "AssociatedValueEnum": AssociatedValueEnumMacro.self,
+    "DidChangeObject": DidChangeObjectMacro.self,
 ]
 #endif
 
-final class SDSMacrosTests: XCTestCase {
-    func testMacro() throws {
-        #if canImport(SDSMacrosMacros)
-        assertMacroExpansion(
-            """
-            #stringify(a + b)
-            """,
-            expandedSource: """
-            (a + b, "a + b")
-            """,
-            macros: testMacros
-        )
-        #else
-        throw XCTSkip("macros are only supported when running tests for the host platform")
-        #endif
-    }
-
-    func testMacroWithStringLiteral() throws {
-        #if canImport(SDSMacrosMacros)
-        assertMacroExpansion(
-            #"""
-            #stringify("Hello, \(name)")
-            """#,
-            expandedSource: #"""
-            ("Hello, \(name)", #""Hello, \(name)""#)
-            """#,
-            macros: testMacros
-        )
-        #else
-        throw XCTSkip("macros are only supported when running tests for the host platform")
-        #endif
-    }
-}
