@@ -240,6 +240,76 @@ final class AssociatedValueEnumTests: XCTestCase {
         throw XCTSkip("macros are only supported when running tests for the host platform")
         #endif
     }
+    
+    // MARK: associate value type
+    func test_AssociatedValueEnum_AssociateValue_MyOwnClass() throws {
+        #if canImport(SDSMacros)
+        assertMacroExpansion(
+            """
+            class MyOwnClass {
+                var value:Int = 1
+            }
+
+            @AssociatedValueEnum
+            enum MyCase {
+                case p1(MyOwnClass)
+            }
+            """, expandedSource: """
+            class MyOwnClass {
+                var value:Int = 1
+            }
+            enum MyCase {
+                case p1(MyOwnClass)
+            
+                var p1Values: (MyOwnClass)? {
+                  if case .p1(let value1) = self {
+                    return (value1)
+                  }
+                  return nil
+                }
+            }
+            """,
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+    
+    func test_AssociatedValueEnum_AssociateValue_MyValueType() throws {
+        #if canImport(SDSMacros)
+        assertMacroExpansion(
+            """
+            struct MyOwnStruct {
+                var value:Int = 1
+            }
+
+            @AssociatedValueEnum
+            enum MyCase {
+                case p1(MyOwnStruct)
+            }
+            """, expandedSource: """
+            struct MyOwnStruct {
+                var value:Int = 1
+            }
+            enum MyCase {
+                case p1(MyOwnStruct)
+            
+                var p1Values: (MyOwnStruct)? {
+                  if case .p1(let value1) = self {
+                    return (value1)
+                  }
+                  return nil
+                }
+            }
+            """,
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+    
 //    func test_AssociatedValueEnum_TwoCasesInOneCase() throws {
 //        #if canImport(SDSMacros)
 //        assertMacroExpansion(
