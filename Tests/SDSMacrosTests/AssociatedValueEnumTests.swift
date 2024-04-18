@@ -310,6 +310,41 @@ final class AssociatedValueEnumTests: XCTestCase {
         #endif
     }
     
+    func test_AssociatedValueEnum_AssociateValue_assosiatedType() throws {
+        #if canImport(SDSMacros)
+        assertMacroExpansion(
+            """
+            struct MyOwnStruct: Identifiable {
+                var id: UUID = UUID()
+                var value:Int = 1
+            }
+
+            @AssociatedValueEnum
+            enum MyCase {
+                case p1(MyOwnStruct.ID)
+            }
+            """, expandedSource: """
+            struct MyOwnStruct: Identifiable {
+                var id: UUID = UUID()
+                var value:Int = 1
+            }
+            enum MyCase {
+                case p1(MyOwnStruct.ID)
+            
+                var p1Values: (MyOwnStruct.ID)? {
+                  if case .p1(let value1) = self {
+                    return (value1)
+                  }
+                  return nil
+                }
+            }
+            """,
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
 //    func test_AssociatedValueEnum_TwoCasesInOneCase() throws {
 //        #if canImport(SDSMacros)
 //        assertMacroExpansion(

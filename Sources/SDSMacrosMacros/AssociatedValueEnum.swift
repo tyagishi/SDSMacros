@@ -76,11 +76,19 @@ public struct AssociatedValueEnumMacro: MemberMacro {
                 var retValues: [String] = []
                 var valueIndex = 1
                 for parameter in parameters {
-                    guard let identifierType = parameter.type.as(IdentifierTypeSyntax.self) else { continue }
-                    retTypes.append(identifierType.name.text)
-                    values.append("let value\(valueIndex)")
-                    retValues.append("value\(valueIndex)")
-                    valueIndex += 1
+                    if let identifierType = parameter.type.as(IdentifierTypeSyntax.self) {
+                        retTypes.append(identifierType.name.text)
+                        values.append("let value\(valueIndex)")
+                        retValues.append("value\(valueIndex)")
+                        valueIndex += 1
+                    } else if let memberType = parameter.type.as(MemberTypeSyntax.self),
+                              let baseType = memberType.baseType.as(IdentifierTypeSyntax.self) {
+                        let type =  baseType.name.text + "." + memberType.name.text
+                        retTypes.append(type)
+                        values.append("let value\(valueIndex)")
+                        retValues.append("value\(valueIndex)")
+                        valueIndex += 1
+                    }
                 }
                 
                 lines.append("""
@@ -94,6 +102,11 @@ public struct AssociatedValueEnumMacro: MemberMacro {
             }
         }
         return lines.map({ DeclSyntax(stringLiteral: $0) })
+    }
+    
+    func fullType(_ memberType: MemberTypeSyntax) -> String {
+        guard let basetype = memberType.baseType.as(IdentifierTypeSyntax.self) else { return ""}
+        return basetype.name.text + "." + memberType.name.text
     }
 }
 
