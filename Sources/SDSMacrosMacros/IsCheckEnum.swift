@@ -25,12 +25,12 @@ import SwiftSyntaxMacros
 ///     case p1
 ///     case p2
 ///
-///     var isP1: Bool {
+///     public var isP1: Bool {
 ///         if case .p1 = self {
 ///             return true
 ///         }
 ///
-///     var isP1: Bool {
+///     public var isP1: Bool {
 ///         if case .p1 = self {
 ///             return true
 ///         }
@@ -62,7 +62,7 @@ public struct IsCheckEnumMacro: MemberMacro {
             .map { ($0, $0.initialUppercased) }
             .map { original, uppercased in
           """
-          var is\(uppercased): Bool {
+          public var is\(uppercased): Bool {
             if case .\(original) = self {
               return true
             }

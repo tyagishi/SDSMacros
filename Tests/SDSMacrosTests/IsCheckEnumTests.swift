@@ -25,7 +25,7 @@ final class IsCheckEnumTests: XCTestCase {
                 case p1
                 case p2
             
-                var isP1: Bool {
+                public var isP1: Bool {
                   if case .p1 = self {
                     return true
                   }
@@ -33,7 +33,7 @@ final class IsCheckEnumTests: XCTestCase {
                   return false
                 }
 
-                var isP2: Bool {
+                public var isP2: Bool {
                   if case .p2 = self {
                     return true
                   }
