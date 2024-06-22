@@ -60,9 +60,14 @@ public struct AssociatedValueEnumMacro: MemberMacro {
         }
         
         var lines: [String] = []
-        
+        var accessLevel: String = ""
+        if declaration.modifiers.contains(where: { $0.name.text == "public" }) {
+            accessLevel = "public "
+        }
+
         for member in declaration.memberBlock.members {
             guard let enumCase = member.decl.as(EnumCaseDeclSyntax.self) else { continue }
+
 
             // oneCase: EnumCaseElementSyntax
             // parameterClause : EnumCaseParameterClauseSyntax
@@ -104,7 +109,7 @@ public struct AssociatedValueEnumMacro: MemberMacro {
                 }
                 
                 lines.append("""
-                               var \(caseElement.name)Values: (\(retTypes.joined(separator: ",")))? {
+                               \(accessLevel)var \(caseElement.name)Values: (\(retTypes.joined(separator: ",")))? {
                                  if case .\(caseElement.name)(\(values.joined(separator: ","))) = self {
                                    return (\(retValues.joined(separator: ",")))
                                  }

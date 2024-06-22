@@ -247,6 +247,38 @@ final class AssociatedValueEnumTests: XCTestCase {
         #endif
     }
     
+    func test_AssociatedValueEnum_InheritAccessLevel() throws {
+        #if canImport(SDSMacros)
+        assertMacroExpansion("""
+            @AssociatedValueEnum
+            public enum MyCase {
+                case p1([Double],Int), p2(String,Float)
+            }
+            """, expandedSource: """
+
+            public enum MyCase {
+                case p1([Double],Int), p2(String,Float)
+
+                public var p1Values: ([Double], Int)? {
+                  if case .p1(let value1, let value2) = self {
+                    return (value1, value2)
+                  }
+                  return nil
+                }
+
+                public var p2Values: (String, Float)? {
+                  if case .p2(let value1, let value2) = self {
+                    return (value1, value2)
+                  }
+                  return nil
+                }
+            }
+            """, macros: testMacros)
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+    
     // MARK: error cases
     func test_AssociatedValueEnum_OnStruct() throws {
         #if canImport(SDSMacros)
