@@ -77,17 +77,29 @@ public struct AssociatedValueEnumMacro: MemberMacro {
                 var valueIndex = 1
                 for parameter in parameters {
                     if let identifierType = parameter.type.as(IdentifierTypeSyntax.self) {
+                        // simple type
                         retTypes.append(identifierType.name.text)
                         values.append("let value\(valueIndex)")
                         retValues.append("value\(valueIndex)")
                         valueIndex += 1
                     } else if let memberType = parameter.type.as(MemberTypeSyntax.self),
                               let baseType = memberType.baseType.as(IdentifierTypeSyntax.self) {
+                        // nested type like TypeA.TypeB
                         let type =  baseType.name.text + "." + memberType.name.text
                         retTypes.append(type)
                         values.append("let value\(valueIndex)")
                         retValues.append("value\(valueIndex)")
                         valueIndex += 1
+                    } else if let arrayType = parameter.type.as(ArrayTypeSyntax.self),
+                              let elementType = arrayType.element.as(IdentifierTypeSyntax.self) {
+                        // array
+                        let type = "[" + elementType.name.text + "]"
+                        retTypes.append(type)
+                        values.append("let value\(valueIndex)")
+                        retValues.append("value\(valueIndex)")
+                        valueIndex += 1
+                    } else {
+                        print("unknown")
                     }
                 }
                 
