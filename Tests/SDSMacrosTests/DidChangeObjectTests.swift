@@ -24,6 +24,10 @@ final class DidChangeObjectTests: XCTestCase {
             
                 public let objectDidChange: PassthroughSubject<Int, Never> = PassthroughSubject()
             }
+            
+            extension MyClass: ObjectDidChangeProvider {
+                typealias ChangeDetailType = Int
+            }
             """, macros: testMacros)
         #else
         throw XCTSkip("macros are only supported when running tests for the host platform")
@@ -42,7 +46,11 @@ final class DidChangeObjectTests: XCTestCase {
             
                 public let objectDidChange: PassthroughSubject<(Int, Double), Never> = PassthroughSubject()
             }
-            """, 
+            
+            extension MyClass: ObjectDidChangeProvider {
+                typealias ChangeDetailType = (Int, Double)
+            }
+            """,
              macros: testMacros)
         #else
         throw XCTSkip("macros are only supported when running tests for the host platform")
@@ -62,6 +70,10 @@ final class DidChangeObjectTests: XCTestCase {
               struct MyChange {}
 
                 public let objectDidChange: PassthroughSubject<MyChange, Never> = PassthroughSubject()
+            }
+            
+            extension MyClass: ObjectDidChangeProvider {
+                typealias ChangeDetailType = MyChange
             }
             """,
              macros: testMacros)
