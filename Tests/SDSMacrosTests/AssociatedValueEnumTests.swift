@@ -63,6 +63,31 @@ final class AssociatedValueEnumTests: XCTestCase {
         #endif
     }
     
+    func test_AssociatedValueEnum_OneOptionalDouble() throws {
+        #if canImport(SDSMacros)
+        assertMacroExpansion("""
+            @AssociatedValueEnum
+            enum MyCase {
+                case p1(Double?)
+            }
+            """, expandedSource: """
+
+            enum MyCase {
+                case p1(Double?)
+
+                var p1Values: (Double?)? {
+                  if case .p1(let value1) = self {
+                    return (value1)
+                  }
+                  return nil
+                }
+            }
+            """, macros: testMacros)
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+    
     func test_AssociatedValueEnum_WithNoAssociateValue() throws {
         #if canImport(SDSMacros)
         assertMacroExpansion("""
@@ -105,6 +130,40 @@ final class AssociatedValueEnumTests: XCTestCase {
                 case p2(Double)
 
                 var p1Values: (Int)? {
+                  if case .p1(let value1) = self {
+                    return (value1)
+                  }
+                  return nil
+                }
+            
+                var p2Values: (Double)? {
+                  if case .p2(let value1) = self {
+                    return (value1)
+                  }
+                  return nil
+                }
+            }
+            """, macros: testMacros)
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+    
+    func test_AssociatedValueEnum_OptionalIntAndDouble() throws {
+        #if canImport(SDSMacros)
+        assertMacroExpansion("""
+            @AssociatedValueEnum
+            enum MyCase {
+                case p1(Int?)
+                case p2(Double)
+            }
+            """, expandedSource: """
+
+            enum MyCase {
+                case p1(Int?)
+                case p2(Double)
+
+                var p1Values: (Int?)? {
                   if case .p1(let value1) = self {
                     return (value1)
                   }
@@ -183,6 +242,40 @@ final class AssociatedValueEnumTests: XCTestCase {
         #endif
     }
     
+    func test_AssociatedValueEnum_IntOptionalDoubleAndStringFloat() throws {
+        #if canImport(SDSMacros)
+        assertMacroExpansion("""
+            @AssociatedValueEnum
+            enum MyCase {
+                case p1(Double?,Int)
+                case p2(String,Float)
+            }
+            """, expandedSource: """
+
+            enum MyCase {
+                case p1(Double?,Int)
+                case p2(String,Float)
+
+                var p1Values: (Double?, Int)? {
+                  if case .p1(let value1, let value2) = self {
+                    return (value1, value2)
+                  }
+                  return nil
+                }
+
+                var p2Values: (String, Float)? {
+                  if case .p2(let value1, let value2) = self {
+                    return (value1, value2)
+                  }
+                  return nil
+                }
+            }
+            """, macros: testMacros)
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+    
     func test_AssociatedValueEnum_IntDoubleAndStringFloatInOneLine() throws {
         #if canImport(SDSMacros)
         assertMacroExpansion("""
@@ -203,6 +296,38 @@ final class AssociatedValueEnumTests: XCTestCase {
                 }
 
                 var p2Values: (String, Float)? {
+                  if case .p2(let value1, let value2) = self {
+                    return (value1, value2)
+                  }
+                  return nil
+                }
+            }
+            """, macros: testMacros)
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+    
+    func test_AssociatedValueEnum_IntDoubleAndStringOptionalFloatInOneLine() throws {
+        #if canImport(SDSMacros)
+        assertMacroExpansion("""
+            @AssociatedValueEnum
+            enum MyCase {
+                case p1(Double,Int), p2(String,Float?)
+            }
+            """, expandedSource: """
+
+            enum MyCase {
+                case p1(Double,Int), p2(String,Float?)
+
+                var p1Values: (Double, Int)? {
+                  if case .p1(let value1, let value2) = self {
+                    return (value1, value2)
+                  }
+                  return nil
+                }
+
+                var p2Values: (String, Float?)? {
                   if case .p2(let value1, let value2) = self {
                     return (value1, value2)
                   }
