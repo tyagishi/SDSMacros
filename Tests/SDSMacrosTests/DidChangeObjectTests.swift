@@ -26,7 +26,7 @@ final class DidChangeObjectTests: XCTestCase {
             }
             
             extension MyClass: ObjectDidChangeProvider {
-                typealias ChangeDetailType = Int
+                public typealias ChangeType = Int
             }
             """, macros: testMacros)
         #else
@@ -48,7 +48,7 @@ final class DidChangeObjectTests: XCTestCase {
             }
             
             extension MyClass: ObjectDidChangeProvider {
-                typealias ChangeDetailType = (Int, Double)
+                public typealias ChangeType = (Int, Double)
             }
             """,
              macros: testMacros)
@@ -73,7 +73,7 @@ final class DidChangeObjectTests: XCTestCase {
             }
             
             extension MyClass: ObjectDidChangeProvider {
-                typealias ChangeDetailType = MyChange
+                public typealias ChangeType = MyChange
             }
             """,
              macros: testMacros)
