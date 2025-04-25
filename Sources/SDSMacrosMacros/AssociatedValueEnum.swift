@@ -81,6 +81,7 @@ public struct AssociatedValueEnumMacro: MemberMacro {
                 var retValues: [String] = []
                 var valueIndex = 1
                 for parameter in parameters {
+                    // note: parameter.description might include end-",",
                     if let identifierType = parameter.type.as(IdentifierTypeSyntax.self) {
                         // simple type
                         retTypes.append(identifierType.name.text)
