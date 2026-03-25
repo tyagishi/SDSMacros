@@ -50,7 +50,7 @@ import SwiftSyntaxMacros
 public struct IsCheckEnumMacro: MemberMacro {
     public static func expansion(of node: AttributeSyntax,
                                  providingMembersOf declaration: some DeclGroupSyntax,
-                                 //                                 conformingTo protocols: [TypeSyntax],
+                                 conformingTo protocols: [TypeSyntax],
                                  in context: some MacroExpansionContext) throws -> [DeclSyntax] {
         guard declaration.is(EnumDeclSyntax.self) else {
             throw SDSMacroError.isCheckEnumOnlyApplicableToEnum
