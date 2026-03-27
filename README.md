@@ -23,11 +23,15 @@ enum MyCase {
         if case .p1 = self {
             return true
         }
+        return false
+    }
 
-    var isP1: Bool {
-        if case .p1 = self {
+    var isP2: Bool {
+        if case .p2 = self {
             return true
         }
+        return false
+    }
 }
 ///
 ```
@@ -38,6 +42,7 @@ enum MyCase {
 /// This macro will generate accessor for associated values.
 ///
 /// For cases which has associated value(s), method "<caseName>Values" will be generated to access associated value(s).
+/// case which has no associated values will NOT have <caseNaem>Vlues method.
 ///
 @AssociateValueEnum
 enum MyCase {
