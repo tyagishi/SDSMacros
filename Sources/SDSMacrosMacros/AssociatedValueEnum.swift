@@ -104,10 +104,8 @@ public struct AssociatedValueEnumMacro: MemberMacro {
                         values.append("let value\(valueIndex)")
                         retValues.append("value\(valueIndex)")
                         valueIndex += 1
-                    } else if let optional = parameter.type.as(OptionalTypeSyntax.self),
-                              let baseType = optional.wrappedType.as(IdentifierTypeSyntax.self) {
-                        let type = baseType.name.text + "?"
-                        retTypes.append(type)
+                    } else if let optional = parameter.type.as(OptionalTypeSyntax.self) {
+                        retTypes.append(optional.trimmedDescription)
                         values.append("let value\(valueIndex)")
                         retValues.append("value\(valueIndex)")
                         valueIndex += 1
