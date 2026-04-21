@@ -533,6 +533,32 @@ final class AssociatedValueEnumTests: XCTestCase {
         throw XCTSkip("macros are only supported when running tests for the host platform")
         #endif
     }
+    func test_AssociatedValueEnum_AssociateValue_GenericsType() throws {
+        #if canImport(SDSMacros)
+        assertMacroExpansion(
+            """
+            @AssociatedValueEnum
+            enum MyCase {
+                case p1(Range<String.Index>)
+            }
+            """, expandedSource: """
+            enum MyCase {
+                case p1(Range<String.Index>)
+            
+                var p1Values: (Range<String.Index>)? {
+                  if case .p1(let value1) = self {
+                    return (value1)
+                  }
+                  return nil
+                }
+            }
+            """,
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
 //    func test_AssociatedValueEnum_TwoCasesInOneCase() throws {
 //        #if canImport(SDSMacros)
 //        assertMacroExpansion(

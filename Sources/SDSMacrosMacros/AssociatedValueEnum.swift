@@ -84,7 +84,7 @@ public struct AssociatedValueEnumMacro: MemberMacro {
                     // note: parameter.description might include end-",",
                     if let identifierType = parameter.type.as(IdentifierTypeSyntax.self) {
                         // simple type
-                        retTypes.append(identifierType.name.text)
+                        retTypes.append(identifierType.trimmedDescription) // use instead of name.text for Generics case
                         values.append("let value\(valueIndex)")
                         retValues.append("value\(valueIndex)")
                         valueIndex += 1
